@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Flower Notebook</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+background:linear-gradient(135deg,#fff4d8,#efd7ff,#dfffdc);
+overflow:hidden;
+}
+
+#openBook{
+display:none;
+}
+
+.book{
+    position:relative;
+    width:430px;
+    height:560px;
+    perspective:2500px;
+    transform:scale(.75);
+    transform-origin:center;
+}
+
+/* =========================
+   Mobile Responsive
+========================= */
+
+@media (max-width:768px){
+
+    .book{
+        transform:scale(.68);
+    }
+
+    .cover-title{
+        font-size:24px;
+    }
+
+    .cover-name{
+        font-size:16px;
+        letter-spacing:3px;
+    }
+
+    .message{
+        font-size:22px;
+    }
+
+    .open-btn{
+        width:58px;
+        height:58px;
+    }
+
+    .open-btn svg{
+        width:22px;
+        height:22px;
+    }
+
+}
+
+@media (max-width:480px){
+
+    body{
+        padding:15px;
+    }
+
+    .book{
+        transform:scale(.50);
+    }
+
+    .cover-title{
+        font-size:18px;
+        line-height:1.35;
+    }
+
+    .cover-name{
+        font-size:13px;
+        letter-spacing:2px;
+    }
+
+    .message{
+        font-size:16px;
+        bottom:-45px;
+    }
+
+    .open-btn{
+        width:48px;
+        height:48px;
+        bottom:20px;
+    }
+
+    .open-btn svg{
+        width:18px;
+        height:18px;
+    }
+
+}
+
+/* Cover */
+
+.cover{
+position:absolute;
+width:100%;
+height:100%;
+background:linear-gradient(145deg,#8a5b2c,#5c3419);
+border-radius:10px;
+box-shadow:0 30px 60px rgba(0,0,0,.4);
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+transform-origin:left;
+transition:1.5s;
+z-index:10;
+}
+
+.cover::before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+width:20px;
+height:100%;
+background:#4a2813;
+}
+
+.cover-title{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-60%);
+    width:90%;
+    color:#f4ec04;
+    font-size:30px;
+    font-weight:700;
+    text-align:center;
+    line-height:1.4;
+    letter-spacing:2px;
+    text-shadow:2px 2px 6px rgba(0,0,0,.6);
+}
+.open-btn{
+    position:absolute;
+    bottom:35px;
+    left:50%;
+    transform:translateX(-50%);
+    width:70px;
+    height:70px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#ffffff;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:36px;
+    font-weight:bold;
+    color:#8a5b2c;
+    box-shadow:0 10px 20px rgba(0,0,0,.25);
+    transition:transform .35s ease, background .35s ease, box-shadow .35s ease;
+    user-select:none;
+}
+
+.open-btn:hover{
+    background:#ffd95c;
+    transform:translateX(-50%) translateY(-18px);
+    box-shadow:0 18px 30px rgba(0,0,0,.3);
+}
+.open-btn{
+    animation:floatArrow 2s ease-in-out infinite;
+}
+
+@keyframes floatArrow{
+    0%,100%{
+        transform:translateX(-50%) translateY(0);
+    }
+    50%{
+        transform:translateX(-50%) translateY(-10px);
+    }
+}
+
+.open-btn:hover{
+background:#ffd95c;
+transform:scale(1.08);
+}
+
+#openBook:checked~.book .cover{
+transform:rotateY(-170deg);
+}
+
+/* Page */
+
+.page{
+position:absolute;
+width:100%;
+height:100%;
+background:#fffef8;
+border-radius:10px;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+box-shadow:0 20px 40px rgba(0,0,0,.2);
+}
+
+.page::before{
+content:"";
+position:absolute;
+left:45px;
+top:0;
+width:3px;
+height:100%;
+background:#ff9090;
+}
+
+.page::after{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:
+repeating-linear-gradient(
+to bottom,
+transparent,
+transparent 33px,
+#dcecff 34px
+);
+opacity:.8;
+}
+
+/* Vase */
+
+.vase{
+position:relative;
+width:180px;
+height:330px;
+z-index:5;
+}
+
+/* ===========================
+   Brown Glass Bottle
+=========================== */
+
+.bottle{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:95px;
+    height:135px;
+
+    background:linear-gradient(
+        to right,
+        #2b1408 0%,
+        #5c2d12 18%,
+        #8c4f20 50%,
+        #5c2d12 82%,
+        #2b1408 100%
+    );
+
+    border-radius:0 0 32px 32px;
+    box-shadow:
+        inset 10px 0 12px rgba(255,255,255,.18),
+        inset -10px 0 12px rgba(0,0,0,.35),
+        0 10px 20px rgba(0,0,0,.25);
+
+    overflow:hidden;
+}
+
+/* Bottle Neck */
+.bottle::before{
+    content:"";
+    position:absolute;
+    top:-48px;
+    left:50%;
+    transform:translateX(-50%);
+    width:34px;
+    height:52px;
+
+    background:linear-gradient(
+        to right,
+        #2b1408,
+        #6d3916,
+        #a45d29,
+        #6d3916,
+        #2b1408
+    );
+
+    border-radius:10px 10px 4px 4px;
+}
+
+/* Glass Shine */
+.bottle::after{
+    content:"";
+    position:absolute;
+    top:10px;
+    left:12px;
+    width:16px;
+    height:105px;
+    border-radius:20px;
+    background:rgba(255,255,255,.22);
+    filter:blur(1px);
+}
+/* Stems */
+
+.stem{
+    position:absolute;
+    bottom:132px;
+    width:5px;
+    background:#2d8c43;
+    border-radius:5px;
+    transform-origin:bottom;
+    animation:wind 4s ease-in-out infinite;
+}
+
+.stem1{
+    height:195px;
+    left:72px;
+}
+
+.stem2{
+    height:182px;
+    left:84px;
+    animation-delay:.4s;
+}
+
+.stem3{
+    height:188px;
+    left:94px;
+    animation-delay:.8s;
+}
+
+.stem4{
+    height:170px;
+    left:64px;
+    animation-delay:1.2s;
+}
+
+.stem5{
+    height:160px;
+    left:100px;
+    animation-delay:1.6s;
+}
+
+/* Leaves */
+
+.leaf{
+    position:absolute;
+    width:34px;
+    height:18px;
+    background:#3ab85a;
+    border-radius:100% 0;
+    animation:wind 4s ease-in-out infinite;
+}
+
+.leaf1{
+    left:48px;
+    bottom:150px;
+    transform:rotate(-35deg);
+}
+
+.leaf2{
+    left:86px;
+    bottom:170px;
+    transform:rotate(150deg);
+}
+
+.leaf3{
+    left:52px;
+    bottom:210px;
+    transform:rotate(-25deg);
+}
+
+.leaf4{
+    left:92px;
+    bottom:235px;
+    transform:rotate(150deg);
+}
+
+.leaf5{
+    left:58px;
+    bottom:275px;
+    transform:rotate(-35deg);
+}
+
+.leaf6{
+    left:98px;
+    bottom:295px;
+    transform:rotate(150deg);
+}
+
+/* Flowers */
+
+.flower{
+position:absolute;
+width:70px;
+height:70px;
+transform-origin:bottom center;
+animation:wind 4s ease-in-out infinite;
+}
+
+.yellow{
+left:48px;
+top:10px;
+}
+
+.violet{
+left:92px;
+top:45px;
+animation-delay:.5s;
+}
+
+.petal{
+position:absolute;
+width:30px;
+height:30px;
+border-radius:50%;
+}
+
+.yellow .petal{
+background:#ffd800;
+}
+
+.violet .petal{
+background:#9a55ff;
+}
+
+.petal:nth-child(1){
+top:0;
+left:20px;
+}
+
+.petal:nth-child(2){
+top:20px;
+left:0;
+}
+
+.petal:nth-child(3){
+top:20px;
+right:0;
+}
+
+.petal:nth-child(4){
+bottom:0;
+left:20px;
+}
+
+.center{
+position:absolute;
+width:24px;
+height:24px;
+background:#5d3500;
+border-radius:50%;
+top:23px;
+left:23px;
+}
+
+/* Wind */
+
+@keyframes wind{
+
+0%{
+transform:rotate(0deg);
+}
+
+25%{
+transform:rotate(-5deg);
+}
+
+50%{
+transform:rotate(5deg);
+}
+
+75%{
+transform:rotate(-3deg);
+}
+
+100%{
+transform:rotate(0deg);
+}
+/* Five flower positions */
+}
+.y1{
+left:30px;
+top:15px;
+}
+
+
+.y2{
+left:70px;
+top:0;
+animation-delay:.4s;
+}
+
+.v1{
+left:105px;
+top:35px;
+animation-delay:.8s;
+}
+
+.v2{
+left:50px;
+top:65px;
+animation-delay:1.2s;
+}
+
+.v3{
+left:120px;
+top:75px;
+animation-delay:1.6s;
+}
+
+/* More stems */
+
+.stem3{
+height:180px;
+left:70px;
+animation-delay:.6s;
+}
+
+.stem4{
+height:170px;
+left:100px;
+animation-delay:1s;
+}
+
+.stem5{
+height:155px;
+left:85px;
+animation-delay:1.4s;
+}
+
+/* Extra leaves */
+
+.leaf5{
+left:95px;
+bottom:185px;
+transform:rotate(-40deg);
+}
+
+.leaf6{
+left:58px;
+bottom:125px;
+transform:rotate(145deg);
+}
+
+/* Message */
+
+.message{
+position:absolute;
+bottom:-60px;
+left:50%;
+transform:translateX(-50%);
+font-size:28px;
+font-weight:bold;
+color:#8a2be2;
+text-align:center;
+font-family:"Georgia",serif;
+text-shadow:2px 2px 6px rgba(0,0,0,.2);
+white-space:nowrap;
+}
+/* Top Name */
+
+.cover-name{
+    position:absolute;
+    top:30px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#fffffe;
+    font-size:18px;
+    font-weight:bold;
+    letter-spacing:5px;
+    text-transform:uppercase;
+    text-shadow:2px 2px 5px rgba(0,0,0,.5);
+}
+
+</style>
+
+</head>
+<body>
+
+<input type="checkbox" id="openBook">
+
+<div class="book">
+
+<div class="cover">
+    <div class="cover-name">MR NOBODY</div>
+
+<h1 class="cover-title">
+DAHIL STALKER KA<br>
+CLICK MO LANG TONG<br>
+BUTTON SA BABA
+</h1>
+
+<label for="openBook" class="open-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="4" x2="12" y2="20"></line>
+    <polyline points="19 13 12 20 5 13"></polyline>
+  </svg>
+</label>
+</div>
+
+<div class="page">
+
+<div class="vase">
+
+<div class="stem stem1"></div>
+<div class="stem stem2"></div>
+
+<div class="leaf leaf1"></div>
+<div class="leaf leaf2"></div>
+<div class="leaf leaf3"></div>
+<div class="leaf leaf4"></div>
+
+<div class="flower yellow">
+<div class="petal"></div>
+<div class="petal"></div>
+<div class="petal"></div>
+<div class="petal"></div>
+<div class="center"></div>
+</div>
+
+<div class="flower violet">
+<div class="petal"></div>
+<div class="petal"></div>
+<div class="petal"></div>
+<div class="petal"></div>
+<div class="center"></div>
+</div>
+
+<div class="stem stem1"></div>
+<div class="stem stem2"></div>
+<div class="stem stem3"></div>
+<div class="stem stem4"></div>
+<div class="stem stem5"></div>
+
+<div class="leaf leaf1"></div>
+<div class="leaf leaf2"></div>
+<div class="leaf leaf3"></div>
+<div class="leaf leaf4"></div>
+<div class="leaf leaf5"></div>
+<div class="leaf leaf6"></div>
+
+<!-- Yellow Flower 1 -->
+<div class="flower yellow y1">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="center"></div>
+</div>
+
+<!-- Yellow Flower 2 -->
+<div class="flower yellow y2">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="center"></div>
+</div>
+
+<!-- Violet Flower 1 -->
+<div class="flower violet v1">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="center"></div>
+</div>
+
+<!-- Violet Flower 2 -->
+<div class="flower violet v2">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="center"></div>
+</div>
+
+<!-- Violet Flower 3 -->
+<div class="flower violet v3">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="center"></div>
+</div>
+
+<div class="bottle"></div>
+
+<div class="message">
+    Congratulations stalker
+</div>
+
+<div class="bottle"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
